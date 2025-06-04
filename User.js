@@ -11,8 +11,5 @@ const UserSchema = new mongoose.Schema({
     required: true
   }
 });
-const bcrypt = require('bcryptjs');
 
 module.exports = mongoose.model('User', UserSchema);
-const User = require('./models/User');
-
