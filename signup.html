@@ -698,11 +698,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const username = document.getElementById('signup-username').value;
     const password = document.getElementById('signup-password').value;
 
-    const res = await fetch('https://backend-7lri.onrender.com', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
+    fetch('https://backend-7lri.onrender.com/signup', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ username, password }),
+})
+.then(res => res.json())
+.then(data => console.log(data))
+.catch(err => console.error(err));
+
 
     const data = await res.json();
     const messageDiv = document.getElementById('signup-message');

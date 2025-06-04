@@ -343,11 +343,17 @@
       var username = document.getElementById('login-username').value;
       var password = document.getElementById('login-password').value;
 
-      var res = await fetch('https://backend-7lri.onrender.com/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username, password: password })
-      });
+      fetch('https://backend-7lri.onrender.com/login', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ username, password }),
+})
+.then(res => res.json())
+.then(data => console.log(data))
+.catch(err => console.error(err));
+
 
       var data = await res.json();
       var messageDiv = document.getElementById('login-message');
