@@ -664,43 +664,43 @@
 
   <div class="particles"></div>
 
-  <div class="glass-card">
-    <form id="signup-form">
-      <h2>Signup</h2>
-      <div class="input-group">
-        <span class="input-icon-outside">👤</span>
-        <input type="text" id="signup-username" placeholder="Username" required />
-      </div>
-      <div class="input-group">
-        <span class="input-icon-outside">🔒</span>
-        <input type="password" id="signup-password" placeholder="Password" required />
-        <button type="button" class="show-password" tabindex="-1" aria-label="Show/Hide Password">👁️</button>
-      </div>
-      <button type="submit">Sign Up</button>
-    </form>
-    <p class="centered-login-link">
-      Already have an account?
-      <a href="login.html" class="login-link">Login</a>
-    </p>
-    <div id="signup-message"></div>
-  </div>
+ <div class="glass-card">
+  <form id="signup-form">
+    <h2>Signup</h2>
+    <div class="input-group">
+      <span class="input-icon-outside">👤</span>
+      <input type="text" id="signup-username" placeholder="Username" required />
+    </div>
+    <div class="input-group">
+      <span class="input-icon-outside">🔒</span>
+      <input type="password" id="signup-password" placeholder="Password" required />
+      <button type="button" class="show-password" tabindex="-1" aria-label="Show/Hide Password">👁️</button>
+    </div>
+    <button type="submit">Sign Up</button>
+  </form>
+  <p class="centered-login-link">
+    Already have an account?
+    <a href="login.html" class="login-link">Login</a>
+  </p>
+  <div id="signup-message"></div>
+</div>
 
-  <!-- Custom Cursor Elements -->
-  <div class="cursor-outer"></div>
-  <div class="custom-cursor"></div>
-  <div class="cursor-effect"></div>
+<!-- Custom Cursor Elements -->
+<div class="cursor-outer"></div>
+<div class="custom-cursor"></div>
+<div class="cursor-effect"></div>
 
-  <script>
+<script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Signup form submission
-document.addEventListener('DOMContentLoaded', function() {
-  // Signup form submission
   const signupForm = document.getElementById('signup-form');
+
   signupForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById('signup-username').value;
+    const password = document.getElementById('signup-password').value;
+
+    const messageDiv = document.getElementById('signup-message');
 
     try {
       const response = await fetch('https://backend-7lri.onrender.com/api/auth/signup', {
@@ -714,29 +714,19 @@ document.addEventListener('DOMContentLoaded', function() {
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.message); // ✅ Show success message
+        messageDiv.textContent = data.message; // ✅ Show success message
+        messageDiv.style.color = 'green';
         // Optionally redirect to login page:
         // window.location.href = '/login.html';
       } else {
-        alert(data.message || 'Signup failed');
+        messageDiv.textContent = data.message || 'Signup failed';
+        messageDiv.style.color = 'red';
       }
-
     } catch (error) {
       console.error('Error:', error);
-      alert('Something went wrong. Please try again.');
+      messageDiv.textContent = 'Something went wrong. Please try again.';
+      messageDiv.style.color = 'red';
     }
-  });
-});
-
-
-
-  // ADD THIS BLOCK to handle form submission
-  const form = document.getElementById('signup-form');
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const username = document.getElementById('signup-username').value;
-    const password = document.getElementById('signup-password').value;
-    signup(username, password);
   });
 
   // Show/hide password toggle
@@ -744,13 +734,8 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.addEventListener('click', function (e) {
       e.preventDefault();
       const pwd = this.parentElement.querySelector('input');
-      if (pwd.type === 'password') {
-        pwd.type = 'text';
-        this.textContent = '🙈';
-      } else {
-        pwd.type = 'password';
-        this.textContent = '👁️';
-      }
+      pwd.type = pwd.type === 'password' ? 'text' : 'password';
+      this.textContent = pwd.type === 'password' ? '👁️' : '🙈';
     });
   });
 
@@ -758,22 +743,26 @@ document.addEventListener('DOMContentLoaded', function() {
   const cursor = document.querySelector('.custom-cursor');
   const outer = document.querySelector('.cursor-outer');
   const effect = document.querySelector('.cursor-effect');
+
   document.addEventListener('mousemove', (e) => {
     cursor.style.left = e.clientX + 'px';
     cursor.style.top = e.clientY + 'px';
     outer.style.left = e.clientX + 'px';
     outer.style.top = e.clientY + 'px';
+
     setTimeout(() => {
       effect.style.left = e.clientX + 'px';
       effect.style.top = e.clientY + 'px';
     }, 100);
   });
+
   document.addEventListener('click', () => {
     cursor.style.transform = 'translate(-50%, -50%) scale(0.7)';
     setTimeout(() => {
       cursor.style.transform = 'translate(-50%, -50%) scale(1)';
     }, 100);
   });
+
   const interactiveElements = document.querySelectorAll('.glass-card, .cta-button, .toggle-switch');
   interactiveElements.forEach(el => {
     el.addEventListener('mouseenter', () => {
@@ -792,6 +781,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const toggleSwitch = document.getElementById('toggleSwitch');
   const body = document.body;
   const label = document.querySelector('.toggle-label');
+
   toggleSwitch.addEventListener('click', function() {
     body.classList.toggle('night-mode');
     label.textContent = body.classList.contains('night-mode') 
@@ -802,6 +792,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Add more particles dynamically
   const particlesContainer = document.querySelector('.particles');
   const particleCount = 15;
+
   for (let i = 0; i < particleCount; i++) {
     const particle = document.createElement('div');
     particle.className = 'particle';
@@ -809,15 +800,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const left = Math.random() * 100;
     const duration = Math.random() * 15 + 10;
     const delay = Math.random() * 10;
+
     particle.style.width = `${size}px`;
     particle.style.height = `${size}px`;
     particle.style.left = `${left}%`;
     particle.style.animationDuration = `${duration}s`;
     particle.style.animationDelay = `${delay}s`;
     particle.style.opacity = Math.random() * 0.5 + 0.3;
+    
     particlesContainer.appendChild(particle);
   }
 });
-  </script>
-</body>
-</html>
+</script>

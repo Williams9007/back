@@ -12,6 +12,8 @@ app.use(cors());
 const User = require('./User'); // Adjust path if needed
 
 // MongoDB connection
+require('dotenv').config(); // Loads .env variables
+
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -19,9 +21,14 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log('✅ MongoDB connected'))
 .catch((err) => console.error('❌ MongoDB connection error:', err));
 
+
 // Signup route
 app.post('/api/auth/signup', async (req, res) => {
+  console.log('📩 Incoming signup request');
+  console.log('Request Body:', req.body); // This will show what the frontend is sending
+
   const { username, password } = req.body;
+
 
   try {
     const existingUser = await User.findOne({ username });
@@ -37,6 +44,7 @@ app.post('/api/auth/signup', async (req, res) => {
     });
 
     await newUser.save();
+    console.log('New user created:', newUser);
 
     res.status(201).json({
       message: 'Signup successful. You can now log in.',
@@ -47,10 +55,11 @@ app.post('/api/auth/signup', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
+    console.error('❌ Signup error:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 // Login route
 app.post('/api/auth/login', async (req, res) => {
