@@ -343,7 +343,7 @@
       var username = document.getElementById('login-username').value;
       var password = document.getElementById('login-password').value;
 
-      var res = await fetch('https://internship-auth-backend.onrender.com/api/auth/login', {
+      var res = await fetch('https://backend-7lri.onrender.com/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: username, password: password })
