@@ -693,33 +693,46 @@
   <script>
 document.addEventListener('DOMContentLoaded', function() {
   // Signup form submission
-  document.getElementById('signup-form').addEventListener('submit', async (e) => {
+ const signupForm = document.getElementById('signup-form');
+signupForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    const response = await fetch('https://your-backend-url.onrender.com/api/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert(data.message); // ✅ Show success message
+      // Optionally redirect to login page:
+      // window.location.href = '/login.html';
+    } else {
+      alert(data.message || 'Signup failed');
+    }
+
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Something went wrong. Please try again.');
+  }
+});
+
+
+  // ADD THIS BLOCK to handle form submission
+  const form = document.getElementById('signup-form');
+  form.addEventListener('submit', function(e) {
     e.preventDefault();
     const username = document.getElementById('signup-username').value;
     const password = document.getElementById('signup-password').value;
-
-    fetch('https://backend-7lri.onrender.com/signup', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify({ username, password }),
-})
-.then(res => res.json())
-.then(data => console.log(data))
-.catch(err => console.error(err));
-
-
-    const data = await res.json();
-    const messageDiv = document.getElementById('signup-message');
-    if (res.ok) {
-      messageDiv.style.color = '#388e3c';
-      messageDiv.textContent = 'Thank you for signing up!';
-      document.getElementById('signup-form').reset();
-    } else {
-      messageDiv.style.color = '#d32f2f';
-      messageDiv.textContent = data.error || 'Signup failed.';
-    }
+    signup(username, password);
   });
 
   // Show/hide password toggle

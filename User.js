@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -10,6 +10,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   }
-});
+}, { timestamps: true }); // <-- This adds createdAt and updatedAt automatically
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', userSchema);

@@ -38,7 +38,14 @@ app.post('/api/auth/signup', async (req, res) => {
 
     await newUser.save();
 
-    res.status(201).json({ message: 'User created successfully' });
+    res.status(201).json({
+      message: 'Signup successful. You can now log in.',
+      user: {
+        id: newUser._id,
+        username: newUser.username,
+        createdAt: newUser.createdAt
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -69,7 +76,15 @@ app.post('/api/auth/login', async (req, res) => {
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     // Send token back to client
-    res.json({ token, message: 'Login successful' });
+    res.status(200).json({
+      token,
+      message: 'Login successful',
+      user: {
+        id: user._id,
+        username: user.username,
+        createdAt: user.createdAt
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
