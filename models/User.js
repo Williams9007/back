@@ -11,8 +11,6 @@ const UserSchema = new mongoose.Schema({
     required: true
   }
 });
-const bcrypt = require('bcryptjs');
 
+// No need to import bcrypt here, since password hashing happens in server.js
 module.exports = mongoose.model('User', UserSchema);
-const User = require('./models/User');
-

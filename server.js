@@ -9,82 +9,75 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const User = require('./User'); // Adjust path if needed
+const User = require('./User'); // Ensure correct path for the User model
 
-// MongoDB connection
-require('dotenv').config(); // Loads .env variables
+// Check for required environment variables
+if (!process.env.MONGO_URI || !process.env.JWT_SECRET) {
+  console.error("❌ Missing environment variables! Ensure MONGO_URI and JWT_SECRET are set.");
+  process.exit(1); // Exit server if env vars are missing
+}
 
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
 .then(() => console.log('✅ MongoDB connected'))
-.catch((err) => console.error('❌ MongoDB connection error:', err));
+.catch((err) => {
+  console.error('❌ MongoDB connection error:', err);
+  process.exit(1); // Exit if DB connection fails
+});
 
-
-// Signup route
+// Signup Route
 app.post('/api/auth/signup', async (req, res) => {
-  console.log('📩 Incoming signup request');
-  console.log('Request Body:', req.body); // This will show what the frontend is sending
-
-  const { username, password } = req.body;
-
-
   try {
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username and password are required!' });
+    }
+
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).json({ message: 'Username already exists' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = new User({
-      username,
-      password: hashedPassword,
-    });
+    const newUser = new User({ username, password: hashedPassword });
 
     await newUser.save();
-    console.log('New user created:', newUser);
+    console.log('✅ New user created:', newUser);
 
-    res.status(201).json({
-      message: 'Signup successful. You can now log in.',
-      user: {
-        id: newUser._id,
-        username: newUser.username,
-        createdAt: newUser.createdAt
-      }
-    });
+    res.status(201).json({ message: 'Signup successful' });
   } catch (error) {
-    console.error('❌ Signup error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('❌ Signup Error:', error);
+    res.status(500).json({ message: 'Server error during signup.', error: error.message });
   }
 });
 
-
-// Login route
+// Login Route
 app.post('/api/auth/login', async (req, res) => {
-  const { username, password } = req.body;
-
   try {
-    // Find the user by username
+    const { username, password } = req.body;
+    
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username and password are required!' });
+    }
+
     const user = await User.findOne({ username });
     if (!user) {
       return res.status(400).json({ message: 'Invalid username or password' });
     }
 
-    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid username or password' });
     }
 
-    // Create JWT payload
     const payload = { userId: user._id, username: user.username };
 
-    // Sign token
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // Send token back to client
     res.status(200).json({
       token,
       message: 'Login successful',
@@ -95,12 +88,12 @@ app.post('/api/auth/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('❌ Login Error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
-// Listen on port from environment variable or fallback to 3000
+// Port Configuration
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
