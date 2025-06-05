@@ -414,79 +414,73 @@
 
 <!-- JavaScript -->
  <script>
-document.getElementById('signup-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const username = document.getElementById('signup-username').value.trim();
-  const password = document.getElementById('signup-password').value.trim();
+  document.addEventListener('DOMContentLoaded', () => {
+    const pwd = document.getElementById('signup-password'); 
+    const toggleBtn = document.querySelector('.show-password');
 
-  if (!username || !password) {
-    alert("Please enter a username and password.");
-    return;
-  }
-
-  try {
-    const res = await fetch('https://backend-7lri.onrender.com/api/auth/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
-    });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      alert('Signup successful!');
-    } else {
-      alert(data.message || 'Signup failed.');
-    }
-  } catch (error) {
-    alert("Error connecting to the server.");
-  }
-});
-
-    toggleBtn.addEventListener('click', function () {
-      if (pwd.type === 'password') {
-        pwd.type = 'text';
-        toggleBtn.textContent = '🙈';
-        toggleBtn.setAttribute('aria-label', '');
-      } else {
-        pwd.type = 'password';
-        toggleBtn.textContent = '👁️ ';
-        toggleBtn.setAttribute('aria-label', '');
-      }
-    });
-
-    document.getElementById('signup-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = document.getElementById('signup-username').value;
-      const password = document.getElementById('signup-password').value;
-
-      const res = await fetch('https://backend-7lri.onrender.com/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+    if (toggleBtn) { // Ensure the button exists before adding an event listener
+      toggleBtn.addEventListener('click', function () {
+        if (pwd.type === 'password') {
+          pwd.type = 'text';
+          toggleBtn.innerHTML = '🙈 Hide';
+          toggleBtn.setAttribute('aria-label', 'Hide Password');
+        } else {
+          pwd.type = 'password';
+          toggleBtn.innerHTML = '👁️ Show';
+          toggleBtn.setAttribute('aria-label', 'Show Password');
+        }
       });
+    }
 
-      const data = await res.json();
-      alert(data.message || data.error);
-    });
+    // Signup form submission
+    const signupForm = document.getElementById('signup-form');
+    if (signupForm) {
+      signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const username = document.getElementById('signup-username').value.trim();
+        const password = document.getElementById('signup-password').value.trim();
 
-  // Hover effects
+        if (!username || !password) {
+          alert("Please enter a username and password.");
+          return;
+        }
+
+        try {
+          const res = await fetch('https://backend-7lri.onrender.com/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            alert('Signup successful!');
+          } else {
+            alert(data.message || 'Signup failed.');
+          }
+        } catch (error) {
+          alert("Error connecting to the server.");
+        }
+      });
+    }
+
+    // Hover effects
     const interactiveElements = document.querySelectorAll('.glass-card, .cta-button, .toggle-switch');
-    
     interactiveElements.forEach(el => {
       el.addEventListener('mouseenter', () => {
-        cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
-        outer.style.width = '60px';
-        outer.style.height = '60px';
+        document.getElementById('cursor').style.transform = 'translate(-50%, -50%) scale(1.5)';
+        document.getElementById('outer').style.width = '60px';
+        document.getElementById('outer').style.height = '60px';
       });
-      
+
       el.addEventListener('mouseleave', () => {
-        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-        outer.style.width = '40px';
-        outer.style.height = '40px';
+        document.getElementById('cursor').style.transform = 'translate(-50%, -50%) scale(1)';
+        document.getElementById('outer').style.width = '40px';
+        document.getElementById('outer').style.height = '40px';
       });
     });
-    
+  });
 </script>
 </div>
 </body>
